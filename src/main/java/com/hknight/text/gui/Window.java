@@ -31,7 +31,7 @@ public class Window extends JFrame {
         editorPanel.setLayout(new BorderLayout());
 
         RSyntaxTextArea textArea = new RSyntaxTextArea();
-        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
+        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
         textArea.setCodeFoldingEnabled(true);
         textArea.setTabSize(4);
         textArea.setTabsEmulated(true);
