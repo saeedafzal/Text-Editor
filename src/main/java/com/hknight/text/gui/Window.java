@@ -1,6 +1,8 @@
 package com.hknight.text.gui;
 
 import com.hknight.text.gui.model.CompVault;
+import com.hknight.text.model.lang.JavascriptProvider;
+import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -35,6 +37,9 @@ public class Window extends JFrame {
         textArea.setCodeFoldingEnabled(true);
         textArea.setTabSize(4);
         textArea.setTabsEmulated(true);
+
+        AutoCompletion autoCompletion = new AutoCompletion(new JavascriptProvider());
+        autoCompletion.install(textArea);
 
         editorPanel.add(new RTextScrollPane(textArea), BorderLayout.CENTER);
         compVault.setTextArea(textArea);
