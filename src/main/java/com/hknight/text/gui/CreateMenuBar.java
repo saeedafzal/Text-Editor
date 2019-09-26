@@ -1,6 +1,7 @@
 package com.hknight.text.gui;
 
 import com.hknight.text.gui.model.CompVault;
+import com.hknight.text.gui.model.ThemeChanger;
 import com.hknight.text.model.SyntaxParser;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
@@ -10,8 +11,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Objects;
 
 import static com.google.common.io.Files.getFileExtension;
+import static com.google.common.io.Files.getNameWithoutExtension;
 
 final class CreateMenuBar extends JMenuBar {
 
@@ -24,6 +29,7 @@ final class CreateMenuBar extends JMenuBar {
 
     CreateMenuBar() {
         add(createFileMenu());
+        add(createViewMenu());
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (saveWriter != null) {
@@ -151,5 +157,36 @@ final class CreateMenuBar extends JMenuBar {
         fileMenu.addSeparator();
         fileMenu.add(exitItem);
         return fileMenu;
+    }
+
+    private JMenu createViewMenu() {
+        JMenu viewMenu = new JMenu("View");
+
+        // Themes
+        JMenu themeMenu = new JMenu("Themes");
+        File themeFolder = getThemesFolder();
+        if (themeFolder.isDirectory()) {
+            for (File file : Objects.requireNonNull(themeFolder.listFiles())) {
+                JMenuItem item = new JMenuItem(getNameWithoutExtension(file.getName()));
+                item.addActionListener(new ThemeChanger(file));
+                themeMenu.add(item);
+            }
+        }
+
+        viewMenu.add(themeMenu);
+        return viewMenu;
+    }
+
+    private File getThemesFolder() {
+        URL url = this.getClass().getResource("/themes");
+        File file;
+
+        try {
+            file = new File(url.toURI());
+        } catch (URISyntaxException e) {
+            file = new File(url.getPath());
+        }
+
+        return file;
     }
 }
