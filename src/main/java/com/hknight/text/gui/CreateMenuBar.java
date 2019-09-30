@@ -1,35 +1,44 @@
 package com.hknight.text.gui;
 
-import com.hknight.text.gui.model.CompVault;
-import com.hknight.text.gui.model.ThemeChanger;
-import com.hknight.text.model.SyntaxParser;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Objects;
+
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.KeyStroke;
+
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+
+import com.hknight.text.gui.model.CompVault;
+import com.hknight.text.gui.model.ThemeChanger;
+import com.hknight.text.model.SyntaxParser;
+import com.hknight.text.model.Themes;
 
 import static com.google.common.io.Files.getFileExtension;
-import static com.google.common.io.Files.getNameWithoutExtension;
 
 final class CreateMenuBar extends JMenuBar {
 
     private CompVault compVault = CompVault.getInstance();
     private JFileChooser chooser = new JFileChooser();
     private SyntaxParser syntaxParser = new SyntaxParser();
-    private int shortcutKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+    private Themes themes = new Themes();
     private File previousFile;
     private FileWriter saveWriter = null;
+    private int shortcutKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
     CreateMenuBar() {
         add(createFileMenu());
         add(createViewMenu());
+        add(createFormatMenu());
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (saveWriter != null) {
@@ -54,7 +63,7 @@ final class CreateMenuBar extends JMenuBar {
             chooser.setMultiSelectionEnabled(false);
             chooser.setAcceptAllFileFilterUsed(true);
 
-            int choice = chooser.showOpenDialog(null);
+            int choice = chooser.showOpenDialog(compVault.getRoot());
             if (choice == JFileChooser.APPROVE_OPTION) {
                 File file = chooser.getSelectedFile();
                 String extension = getFileExtension(file.getName());
@@ -164,29 +173,38 @@ final class CreateMenuBar extends JMenuBar {
 
         // Themes
         JMenu themeMenu = new JMenu("Themes");
-        File themeFolder = getThemesFolder();
-        if (themeFolder.isDirectory()) {
-            for (File file : Objects.requireNonNull(themeFolder.listFiles())) {
-                JMenuItem item = new JMenuItem(getNameWithoutExtension(file.getName()));
-                item.addActionListener(new ThemeChanger(file));
-                themeMenu.add(item);
-            }
-        }
+        themes.getThemes().forEach(theme -> {
+            JMenuItem item = new JMenuItem(theme);
+            item.setActionCommand(theme);
+            item.addActionListener(new ThemeChanger());
+            themeMenu.add(item);
+        });
 
         viewMenu.add(themeMenu);
         return viewMenu;
     }
 
-    private File getThemesFolder() {
-        URL url = this.getClass().getResource("/themes");
-        File file;
+    private JMenu createFormatMenu() {
+        JMenu formatMenu = new JMenu("Format");
 
-        try {
-            file = new File(url.toURI());
-        } catch (URISyntaxException e) {
-            file = new File(url.getPath());
-        }
+        JPanel fontSizePanel = new JPanel();
+        JSpinner spinner = new JSpinner();
+        spinner.setValue(compVault.getTextArea().getFont().getSize());
+        fontSizePanel.add(new JLabel("Font Size: "));
+        fontSizePanel.add(spinner);
 
-        return file;
+        JMenuItem fontSizeItem = new JMenuItem("Font Size");
+        fontSizeItem.addActionListener(e -> {
+            int choice = JOptionPane.showConfirmDialog(compVault.getRoot(), fontSizePanel);
+            if (choice == JOptionPane.OK_OPTION) {
+                compVault.getTextArea().setFont(compVault
+                        .getTextArea()
+                        .getFont()
+                        .deriveFont(Float.parseFloat(spinner.getValue().toString())));
+            }
+        });
+
+        formatMenu.add(fontSizeItem);
+        return formatMenu;
     }
 }

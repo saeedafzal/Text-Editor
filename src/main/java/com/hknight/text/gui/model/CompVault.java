@@ -1,12 +1,15 @@
 package com.hknight.text.gui.model;
 
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-
 import java.io.File;
+
+import javax.swing.JFrame;
+
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 public class CompVault {
 
     private static CompVault instance;
+    private JFrame root;
     private RSyntaxTextArea textArea;
     private File file;
 
@@ -32,5 +35,13 @@ public class CompVault {
 
     public void setFile(File file) {
         this.file = file;
+    }
+
+    public JFrame getRoot() {
+        return root;
+    }
+
+    public void setRoot(JFrame root) {
+        this.root = root;
     }
 }

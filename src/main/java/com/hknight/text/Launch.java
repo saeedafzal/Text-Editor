@@ -1,8 +1,9 @@
 package com.hknight.text;
 
-import com.hknight.text.gui.Window;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
-import javax.swing.*;
+import com.hknight.text.gui.Window;
 
 public class Launch {
 

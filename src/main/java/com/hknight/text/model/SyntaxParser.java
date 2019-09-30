@@ -1,9 +1,9 @@
 package com.hknight.text.model;
 
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
 public class SyntaxParser {
 
