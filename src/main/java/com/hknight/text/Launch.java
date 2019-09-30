@@ -3,6 +3,9 @@ package com.hknight.text;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
+
 import com.hknight.text.gui.Window;
 
 public class Launch {

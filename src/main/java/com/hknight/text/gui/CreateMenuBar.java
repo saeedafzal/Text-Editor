@@ -15,6 +15,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
@@ -95,7 +97,6 @@ final class CreateMenuBar extends JMenuBar {
         saveItem.addActionListener(e -> {
             if (compVault.getFile() != null) {
                 if (compVault.getFile().exists()) {
-
                     try {
                         if (previousFile == null) saveWriter = new FileWriter(compVault.getFile());
                         compVault.getTextArea().write(saveWriter);
@@ -140,6 +141,8 @@ final class CreateMenuBar extends JMenuBar {
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
+
+                    compVault.getRoot().setTitle("Text Editor - " + createdFile.getName());
                 }
             }
         });
@@ -155,6 +158,8 @@ final class CreateMenuBar extends JMenuBar {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+
+            compVault.getRoot().setTitle("Text Editor");
         });
 
         final JMenuItem exitItem = new JMenuItem("Exit");
@@ -171,8 +176,30 @@ final class CreateMenuBar extends JMenuBar {
     private JMenu createViewMenu() {
         JMenu viewMenu = new JMenu("View");
 
+        // Window Appearance
+        JMenu appearance = new JMenu("Appearance");
+        themes.getAppearance().keySet().forEach(theme -> {
+            JMenuItem item = new JMenuItem(theme);
+            item.setActionCommand(theme);
+            item.addActionListener(actionEvent -> {
+                try {
+                    if (actionEvent.getActionCommand().equalsIgnoreCase("default")) {
+                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    } else {
+                        UIManager.setLookAndFeel(themes.getAppearance().get(actionEvent.getActionCommand()));
+                    }
+
+                    SwingUtilities.updateComponentTreeUI(compVault.getRoot());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+
+            appearance.add(item);
+        });
+
         // Themes
-        JMenu themeMenu = new JMenu("Themes");
+        JMenu themeMenu = new JMenu("Editor Theme");
         themes.getThemes().forEach(theme -> {
             JMenuItem item = new JMenuItem(theme);
             item.setActionCommand(theme);
@@ -180,6 +207,7 @@ final class CreateMenuBar extends JMenuBar {
             themeMenu.add(item);
         });
 
+        viewMenu.add(appearance);
         viewMenu.add(themeMenu);
         return viewMenu;
     }
@@ -195,7 +223,7 @@ final class CreateMenuBar extends JMenuBar {
 
         JMenuItem fontSizeItem = new JMenuItem("Font Size");
         fontSizeItem.addActionListener(e -> {
-            int choice = JOptionPane.showConfirmDialog(compVault.getRoot(), fontSizePanel);
+            int choice = JOptionPane.showConfirmDialog(compVault.getRoot(), fontSizePanel, "Change Font Size", JOptionPane.OK_CANCEL_OPTION);
             if (choice == JOptionPane.OK_OPTION) {
                 compVault.getTextArea().setFont(compVault
                         .getTextArea()
