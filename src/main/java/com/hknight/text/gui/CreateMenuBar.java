@@ -1,6 +1,7 @@
 package com.hknight.text.gui;
 
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -189,7 +190,10 @@ final class CreateMenuBar extends JMenuBar {
                         UIManager.setLookAndFeel(themes.getAppearance().get(actionEvent.getActionCommand()));
                     }
 
-                    SwingUtilities.updateComponentTreeUI(compVault.getRoot());
+                    for (Window w : Window.getWindows()) {
+                        SwingUtilities.updateComponentTreeUI(w);
+                    }
+                    SwingUtilities.updateComponentTreeUI(chooser);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
