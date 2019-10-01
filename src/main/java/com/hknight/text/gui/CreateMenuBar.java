@@ -19,8 +19,10 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import org.checkerframework.checker.units.qual.A;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
+import com.hknight.text.gui.model.AppearanceChanger;
 import com.hknight.text.gui.model.CompVault;
 import com.hknight.text.gui.model.ThemeChanger;
 import com.hknight.text.model.SyntaxParser;
@@ -179,26 +181,18 @@ final class CreateMenuBar extends JMenuBar {
 
         // Window Appearance
         JMenu appearance = new JMenu("Appearance");
+
+        AppearanceChanger appearanceChanger = new AppearanceChanger(themes, chooser);
+
+        JMenuItem defaultItem = new JMenuItem("Default");
+        defaultItem.setActionCommand("default");
+        defaultItem.addActionListener(appearanceChanger);
+        appearance.add(defaultItem);
+
         themes.getAppearance().keySet().forEach(theme -> {
             JMenuItem item = new JMenuItem(theme);
             item.setActionCommand(theme);
-            item.addActionListener(actionEvent -> {
-                try {
-                    if (actionEvent.getActionCommand().equalsIgnoreCase("default")) {
-                        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    } else {
-                        UIManager.setLookAndFeel(themes.getAppearance().get(actionEvent.getActionCommand()));
-                    }
-
-                    for (Window w : Window.getWindows()) {
-                        SwingUtilities.updateComponentTreeUI(w);
-                    }
-                    SwingUtilities.updateComponentTreeUI(chooser);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-
+            item.addActionListener(appearanceChanger);
             appearance.add(item);
         });
 
