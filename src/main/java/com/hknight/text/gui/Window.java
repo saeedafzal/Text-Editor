@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -27,7 +28,12 @@ public class Window extends JFrame {
         JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout());
 
-        contentPane.add(editorPanel(), BorderLayout.CENTER);
+        final JSplitPane splitPane = new JSplitPane();
+        splitPane.setResizeWeight(0.25);
+        splitPane.setLeftComponent(new SideBar());
+        splitPane.setRightComponent(editorPanel());
+
+        contentPane.add(splitPane, BorderLayout.CENTER);
         setContentPane(contentPane);
 
         setJMenuBar(new CreateMenuBar());

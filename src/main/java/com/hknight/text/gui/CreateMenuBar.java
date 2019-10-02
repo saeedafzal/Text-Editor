@@ -1,7 +1,6 @@
 package com.hknight.text.gui;
 
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -16,10 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 
-import org.checkerframework.checker.units.qual.A;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
 import com.hknight.text.gui.model.AppearanceChanger;
@@ -101,7 +97,7 @@ final class CreateMenuBar extends JMenuBar {
             if (compVault.getFile() != null) {
                 if (compVault.getFile().exists()) {
                     try {
-                        if (previousFile == null) saveWriter = new FileWriter(compVault.getFile());
+                        if (previousFile == null) saveWriter = new FileWriter(compVault.getFile(), false);
                         compVault.getTextArea().write(saveWriter);
                         saveWriter.flush();
                     } catch (IOException ex) {
@@ -132,7 +128,7 @@ final class CreateMenuBar extends JMenuBar {
                         }
                     } else {
                         try {
-                            saveWriter = new FileWriter(createdFile);
+                            saveWriter = new FileWriter(createdFile, false);
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
@@ -152,17 +148,20 @@ final class CreateMenuBar extends JMenuBar {
 
         final JMenuItem closeFileItem = new JMenuItem("Close File");
         closeFileItem.addActionListener(e -> {
-            compVault.getTextArea().setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
-            compVault.getTextArea().setText("");
-            previousFile = null;
-            compVault.setFile(null);
-            try {
-                saveWriter.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            if (saveWriter != null) {
+                compVault.getTextArea().setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
+                compVault.getTextArea().setText("");
+                previousFile = null;
+                compVault.setFile(null);
+                try {
+                    saveWriter.close();
+                    saveWriter = null;
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
 
-            compVault.getRoot().setTitle("Text Editor");
+                compVault.getRoot().setTitle("Text Editor");
+            }
         });
 
         final JMenuItem exitItem = new JMenuItem("Exit");
