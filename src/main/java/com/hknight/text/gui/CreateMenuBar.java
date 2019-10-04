@@ -91,6 +91,21 @@ final class CreateMenuBar extends JMenuBar {
             }
         });
 
+        final JMenuItem openDirectoryItem = new JMenuItem("Open Project Directory");
+        openDirectoryItem.addActionListener(e -> {
+            chooser.setDialogTitle("Open Project Directory");
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.setMultiSelectionEnabled(false);
+            chooser.setAcceptAllFileFilterUsed(false);
+
+            int choice = chooser.showOpenDialog(compVault.getRoot());
+
+            if (choice == JFileChooser.APPROVE_OPTION) {
+                File directory = chooser.getSelectedFile();
+                compVault.getSideBar().populateDirectory(directory);
+            }
+        });
+
         final JMenuItem saveItem = new JMenuItem("Save");
         saveItem.setAccelerator(KeyStroke.getKeyStroke('S', shortcutKeyMask));
         saveItem.addActionListener(e -> {
@@ -168,7 +183,10 @@ final class CreateMenuBar extends JMenuBar {
         exitItem.addActionListener(e -> System.exit(0));
 
         fileMenu.add(openItem);
+        fileMenu.add(openDirectoryItem);
+        fileMenu.addSeparator();
         fileMenu.add(saveItem);
+        fileMenu.addSeparator();
         fileMenu.add(closeFileItem);
         fileMenu.addSeparator();
         fileMenu.add(exitItem);

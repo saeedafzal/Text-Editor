@@ -12,6 +12,7 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import com.hknight.text.gui.model.CompVault;
+import com.hknight.text.gui.tree.SideBar;
 import com.hknight.text.model.lang.JavascriptProvider;
 
 public class Window extends JFrame {
@@ -29,13 +30,16 @@ public class Window extends JFrame {
         contentPane.setLayout(new BorderLayout());
 
         final JSplitPane splitPane = new JSplitPane();
+
         splitPane.setResizeWeight(0.25);
-        splitPane.setLeftComponent(new SideBar());
+        SideBar sideBar = new SideBar();
+        splitPane.setLeftComponent(sideBar);
         splitPane.setRightComponent(editorPanel());
 
         contentPane.add(splitPane, BorderLayout.CENTER);
         setContentPane(contentPane);
 
+        compVault.setSideBar(sideBar);
         setJMenuBar(new CreateMenuBar());
     }
 

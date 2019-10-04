@@ -6,12 +6,15 @@ import javax.swing.JFrame;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
+import com.hknight.text.gui.tree.SideBar;
+
 public class CompVault {
 
     private static CompVault instance;
     private JFrame root;
     private RSyntaxTextArea textArea;
     private File file;
+    private SideBar sideBar;
 
     public static CompVault getInstance() {
         if (instance == null) {
@@ -43,5 +46,13 @@ public class CompVault {
 
     public void setRoot(JFrame root) {
         this.root = root;
+    }
+
+    public SideBar getSideBar() {
+        return sideBar;
+    }
+
+    public void setSideBar(SideBar sideBar) {
+        this.sideBar = sideBar;
     }
 }
