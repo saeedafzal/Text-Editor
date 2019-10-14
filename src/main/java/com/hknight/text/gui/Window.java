@@ -5,49 +5,41 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
-import com.hknight.text.gui.model.CompVault;
-import com.hknight.text.model.lang.JavascriptProvider;
+import com.hknight.text.gui.menubar.CreateMenuBar;
 
 public class Window extends JFrame {
 
-    private CompVault compVault = CompVault.getInstance();
+    private final TextEditor textArea = new TextEditor();
 
     public Window() {
-        compVault.setRoot(this);
+        GlobalComp globalComp = GlobalComp.getInstance();
+        globalComp.setWindow(this);
+        globalComp.setTextArea(textArea);
 
-        setTitle("Text Editor");
-        setSize(800, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setTitle("Text Editor");
+        this.setSize(1280, 720);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel contentPane = new JPanel();
+        final JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout());
 
-        contentPane.add(editorPanel(), BorderLayout.CENTER);
-        setContentPane(contentPane);
+        contentPane.add(createEditorPanel(), BorderLayout.CENTER);
+        this.setContentPane(contentPane);
 
-        setJMenuBar(new CreateMenuBar());
+        this.setJMenuBar(new CreateMenuBar());
     }
 
-    private JPanel editorPanel() {
+    private JPanel createEditorPanel() {
         JPanel editorPanel = new JPanel();
         editorPanel.setLayout(new BorderLayout());
 
-        RSyntaxTextArea textArea = new RSyntaxTextArea();
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
-        textArea.setCodeFoldingEnabled(true);
-        textArea.setTabSize(4);
-        textArea.setTabsEmulated(true);
 
-        AutoCompletion autoCompletion = new AutoCompletion(new JavascriptProvider());
-        autoCompletion.install(textArea);
-
-        editorPanel.add(new RTextScrollPane(textArea), BorderLayout.CENTER);
-        compVault.setTextArea(textArea);
+        editorPanel.add(new RTextScrollPane(textArea));
         return editorPanel;
     }
 }

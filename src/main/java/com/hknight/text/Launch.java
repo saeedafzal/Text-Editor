@@ -3,8 +3,7 @@ package com.hknight.text;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 
 import com.hknight.text.gui.Window;
 
@@ -18,9 +17,8 @@ public class Launch {
 
         SwingUtilities.invokeLater(() -> {
             try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                UIManager.setLookAndFeel(new FlatLightLaf());
                 final Window window = new Window();
-                SwingUtilities.updateComponentTreeUI(window);
                 window.setLocationRelativeTo(null);
                 window.setVisible(true);
             } catch (Exception e) {
