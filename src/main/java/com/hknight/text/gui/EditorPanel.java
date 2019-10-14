@@ -5,6 +5,7 @@ import java.io.File;
 
 import javax.swing.JPanel;
 
+import org.fife.rsta.ac.LanguageSupportFactory;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
@@ -20,6 +21,7 @@ public class EditorPanel extends JPanel {
     }
 
     private TextEditor createEditor() {
+        LanguageSupportFactory.get().register(textEditor);
         textEditor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
         return textEditor;
     }

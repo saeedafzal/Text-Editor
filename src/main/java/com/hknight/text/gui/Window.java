@@ -1,25 +1,15 @@
 package com.hknight.text.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Insets;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.UIManager;
-
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rtextarea.RTextScrollPane;
 
 import com.hknight.text.gui.menubar.CreateMenuBar;
 
 public class Window extends JFrame {
 
-    private static final String TITLE = "Text Editor";
     private final GlobalComp globalComp = GlobalComp.getInstance();
     private final JTabbedPane tabbedPane = new JTabbedPane();
 
@@ -34,10 +24,18 @@ public class Window extends JFrame {
         contentPane.setLayout(new BorderLayout());
 
         contentPane.add(tabbedPane, BorderLayout.CENTER);
+        contentPane.add(createFooter(), BorderLayout.SOUTH);
         this.setContentPane(contentPane);
 
         this.setJMenuBar(new CreateMenuBar());
         addNewTab();
+    }
+
+    private JPanel createFooter() {
+        JPanel footerPanel = new JPanel();
+        footerPanel.setLayout(new BorderLayout());
+
+        return footerPanel;
     }
 
     public void addNewTab() {
@@ -49,15 +47,5 @@ public class Window extends JFrame {
 
     public JTabbedPane getTabbedPane() {
         return tabbedPane;
-    }
-
-    @Override
-    public void setTitle(String custom) {
-        if (custom != null) {
-            super.setTitle(custom + " - " + TITLE);
-            return;
-        }
-
-        super.setTitle(TITLE);
     }
 }

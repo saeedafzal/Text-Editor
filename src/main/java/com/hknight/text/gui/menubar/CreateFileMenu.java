@@ -66,6 +66,7 @@ class CreateFileMenu extends JMenu {
                         globalComp.getWindow().addNewTab();
                         JTabbedPane tabbedPane = globalComp.getWindow().getTabbedPane();
                         globalComp.getEditors().get(tabbedPane.getSelectedIndex()).getTextEditor().read(fileReader, file.getName());
+                        globalComp.getEditors().get(tabbedPane.getSelectedIndex()).setFile(file);
                         tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), file.getName());
                     } catch (IOException ex) {
                         ex.printStackTrace();
