@@ -10,7 +10,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
 import com.hknight.text.gui.GlobalComp;
 
@@ -26,6 +26,7 @@ class CreateFileMenu extends JMenu {
         this.setText("File");
 
         this.add(createOpenMenu());
+        this.add(createCloseFileMenu());
         this.addSeparator();
         this.add(createExitItem());
     }
@@ -48,6 +49,7 @@ class CreateFileMenu extends JMenu {
                 if (file.isFile()) {
                     try (FileReader fileReader = new FileReader(file)) {
                         globalComp.getTextArea().read(fileReader, file.getName());
+                        globalComp.getWindow().setTitle(file.getName());
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -56,6 +58,19 @@ class CreateFileMenu extends JMenu {
         });
 
         return openItem;
+    }
+
+    private JMenuItem createCloseFileMenu() {
+        JMenuItem closeFileItem = new JMenuItem("Close File");
+
+        closeFileItem.addActionListener(e -> {
+            globalComp.getTextArea().setCaretPosition(0);
+            globalComp.getTextArea().setText("");
+            globalComp.getTextArea().setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
+            globalComp.getWindow().setTitle(null);
+        });
+
+        return closeFileItem;
     }
 
     private JMenuItem createExitItem() {

@@ -5,7 +5,6 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
@@ -13,6 +12,7 @@ import com.hknight.text.gui.menubar.CreateMenuBar;
 
 public class Window extends JFrame {
 
+    private static final String TITLE = "Text Editor";
     private final TextEditor textArea = new TextEditor();
 
     public Window() {
@@ -20,7 +20,7 @@ public class Window extends JFrame {
         globalComp.setWindow(this);
         globalComp.setTextArea(textArea);
 
-        this.setTitle("Text Editor");
+        this.setTitle(null);
         this.setSize(1280, 720);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -41,5 +41,15 @@ public class Window extends JFrame {
 
         editorPanel.add(new RTextScrollPane(textArea));
         return editorPanel;
+    }
+
+    @Override
+    public void setTitle(String custom) {
+        if (custom != null) {
+            super.setTitle(custom + " - " + TITLE);
+            return;
+        }
+
+        super.setTitle(TITLE);
     }
 }

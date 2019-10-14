@@ -17,6 +17,7 @@ public class SyntaxMap {
         syntaxMap.put("js", SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
         syntaxMap.put("java", SyntaxConstants.SYNTAX_STYLE_JAVA);
         syntaxMap.put("ts", SyntaxConstants.SYNTAX_STYLE_TYPESCRIPT);
+        syntaxMap.put("xml", SyntaxConstants.SYNTAX_STYLE_XML);
     }
 
     public Map<String, String> getSyntaxMap() {
