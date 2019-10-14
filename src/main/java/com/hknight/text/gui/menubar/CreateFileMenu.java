@@ -3,6 +3,7 @@ package com.hknight.text.gui.menubar;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
@@ -15,18 +16,22 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import com.hknight.text.gui.GlobalComp;
 
 import static java.awt.event.KeyEvent.VK_O;
+import static java.awt.event.KeyEvent.VK_S;
 
 class CreateFileMenu extends JMenu {
 
     private static final int CTRL_MASK_KEY = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
     private final GlobalComp globalComp = GlobalComp.getInstance();
     private final JFileChooser chooser = new JFileChooser();
+    private File currentFile;
 
     CreateFileMenu() {
         this.setText("File");
 
         this.add(createOpenMenu());
         this.add(createCloseFileMenu());
+        this.addSeparator();
+        this.add(createSaveItem());
         this.addSeparator();
         this.add(createExitItem());
     }
@@ -47,6 +52,7 @@ class CreateFileMenu extends JMenu {
             if (choice == JFileChooser.APPROVE_OPTION) {
                 final File file = chooser.getSelectedFile();
                 if (file.isFile()) {
+                    currentFile = file;
                     try (FileReader fileReader = new FileReader(file)) {
                         globalComp.getTextArea().read(fileReader, file.getName());
                         globalComp.getWindow().setTitle(file.getName());
@@ -68,9 +74,48 @@ class CreateFileMenu extends JMenu {
             globalComp.getTextArea().setText("");
             globalComp.getTextArea().setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
             globalComp.getWindow().setTitle(null);
+            currentFile = null;
         });
 
         return closeFileItem;
+    }
+
+    private JMenuItem createSaveItem() {
+        JMenuItem saveItem = new JMenuItem("Save");
+        saveItem.setAccelerator(KeyStroke.getKeyStroke(VK_S, CTRL_MASK_KEY));
+
+        saveItem.addActionListener(e -> {
+            if (currentFile != null) {
+                // File exists
+                try (FileWriter writer = new FileWriter(currentFile)) {
+                    globalComp.getTextArea().write(writer);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                // Save new file
+                // Set chooser settings
+                chooser.setDialogTitle("Save File");
+                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                chooser.setAcceptAllFileFilterUsed(true);
+
+                int choice = chooser.showSaveDialog(globalComp.getWindow());
+
+                if (choice == JFileChooser.APPROVE_OPTION) {
+                    File file = chooser.getSelectedFile();
+                    try (FileWriter writer = new FileWriter(file)) {
+                        file.createNewFile();
+                        currentFile = file;
+                        globalComp.getTextArea().saveAsSetSyntax(writer, file.getName());
+                        globalComp.getWindow().setTitle(file.getName());
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        return saveItem;
     }
 
     private JMenuItem createExitItem() {
