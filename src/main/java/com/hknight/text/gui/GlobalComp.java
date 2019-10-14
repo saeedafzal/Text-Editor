@@ -1,5 +1,10 @@
 package com.hknight.text.gui;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 public class GlobalComp {
 
     private static GlobalComp instance;
@@ -15,21 +20,21 @@ public class GlobalComp {
     // ---------------------------------------
 
     private Window window;
-    private TextEditor textArea;
+    private List<EditorPanel> editors = new LinkedList<>();
 
     public Window getWindow() {
         return window;
     }
 
-    public TextEditor getTextArea() {
-        return textArea;
+    public List<EditorPanel> getEditors() {
+        return editors;
     }
 
     public void setWindow(Window window) {
         this.window = window;
     }
 
-    public void setTextArea(TextEditor textArea) {
-        this.textArea = textArea;
+    public void putEditors(EditorPanel editorPanel) {
+        editors.add(editorPanel);
     }
 }

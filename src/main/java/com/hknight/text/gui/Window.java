@@ -1,9 +1,16 @@
 package com.hknight.text.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Insets;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
 
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -13,12 +20,11 @@ import com.hknight.text.gui.menubar.CreateMenuBar;
 public class Window extends JFrame {
 
     private static final String TITLE = "Text Editor";
-    private final TextEditor textArea = new TextEditor();
+    private final GlobalComp globalComp = GlobalComp.getInstance();
+    private final JTabbedPane tabbedPane = new JTabbedPane();
 
     public Window() {
-        GlobalComp globalComp = GlobalComp.getInstance();
         globalComp.setWindow(this);
-        globalComp.setTextArea(textArea);
 
         this.setTitle(null);
         this.setSize(1280, 720);
@@ -27,20 +33,22 @@ public class Window extends JFrame {
         final JPanel contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout());
 
-        contentPane.add(createEditorPanel(), BorderLayout.CENTER);
+        contentPane.add(tabbedPane, BorderLayout.CENTER);
         this.setContentPane(contentPane);
 
         this.setJMenuBar(new CreateMenuBar());
+        addNewTab();
     }
 
-    private JPanel createEditorPanel() {
-        JPanel editorPanel = new JPanel();
-        editorPanel.setLayout(new BorderLayout());
+    public void addNewTab() {
+        EditorPanel editorPanel = new EditorPanel();
+        tabbedPane.addTab("Untitled", editorPanel);
+        globalComp.putEditors(editorPanel);
+        tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
+    }
 
-        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
-
-        editorPanel.add(new RTextScrollPane(textArea));
-        return editorPanel;
+    public JTabbedPane getTabbedPane() {
+        return tabbedPane;
     }
 
     @Override

@@ -9,31 +9,41 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
-
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 
 import com.hknight.text.gui.GlobalComp;
 
+import static java.awt.event.KeyEvent.VK_N;
 import static java.awt.event.KeyEvent.VK_O;
 import static java.awt.event.KeyEvent.VK_S;
+import static java.awt.event.KeyEvent.VK_W;
 
 class CreateFileMenu extends JMenu {
 
     private static final int CTRL_MASK_KEY = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
     private final GlobalComp globalComp = GlobalComp.getInstance();
     private final JFileChooser chooser = new JFileChooser();
-    private File currentFile;
 
     CreateFileMenu() {
         this.setText("File");
 
+        this.add(createNewItem());
+        this.addSeparator();
         this.add(createOpenMenu());
-        this.add(createCloseFileMenu());
+        this.add(createCloseTabMenu());
         this.addSeparator();
         this.add(createSaveItem());
         this.addSeparator();
         this.add(createExitItem());
+    }
+
+    private JMenuItem createNewItem() {
+        JMenuItem newItem = new JMenuItem("New");
+        newItem.setAccelerator(KeyStroke.getKeyStroke(VK_N, CTRL_MASK_KEY));
+        newItem.addActionListener(e -> globalComp.getWindow().addNewTab());
+
+        return newItem;
     }
 
     private JMenuItem createOpenMenu() {
@@ -52,10 +62,11 @@ class CreateFileMenu extends JMenu {
             if (choice == JFileChooser.APPROVE_OPTION) {
                 final File file = chooser.getSelectedFile();
                 if (file.isFile()) {
-                    currentFile = file;
                     try (FileReader fileReader = new FileReader(file)) {
-                        globalComp.getTextArea().read(fileReader, file.getName());
-                        globalComp.getWindow().setTitle(file.getName());
+                        globalComp.getWindow().addNewTab();
+                        JTabbedPane tabbedPane = globalComp.getWindow().getTabbedPane();
+                        globalComp.getEditors().get(tabbedPane.getSelectedIndex()).getTextEditor().read(fileReader, file.getName());
+                        tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), file.getName());
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -66,18 +77,20 @@ class CreateFileMenu extends JMenu {
         return openItem;
     }
 
-    private JMenuItem createCloseFileMenu() {
-        JMenuItem closeFileItem = new JMenuItem("Close File");
+    private JMenuItem createCloseTabMenu() {
+        JMenuItem closeTabItem = new JMenuItem("Close Tab");
+        closeTabItem.setAccelerator(KeyStroke.getKeyStroke(VK_W, CTRL_MASK_KEY));
 
-        closeFileItem.addActionListener(e -> {
-            globalComp.getTextArea().setCaretPosition(0);
-            globalComp.getTextArea().setText("");
-            globalComp.getTextArea().setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
-            globalComp.getWindow().setTitle(null);
-            currentFile = null;
+        closeTabItem.addActionListener(e -> {
+            JTabbedPane tabbedPane = globalComp.getWindow().getTabbedPane();
+            globalComp.getEditors().remove(tabbedPane.getSelectedIndex());
+            tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
+            if (tabbedPane.getTabCount() == 0) {
+                System.exit(0);
+            }
         });
 
-        return closeFileItem;
+        return closeTabItem;
     }
 
     private JMenuItem createSaveItem() {
@@ -85,10 +98,12 @@ class CreateFileMenu extends JMenu {
         saveItem.setAccelerator(KeyStroke.getKeyStroke(VK_S, CTRL_MASK_KEY));
 
         saveItem.addActionListener(e -> {
-            if (currentFile != null) {
+            int index = globalComp.getWindow().getTabbedPane().getSelectedIndex();
+
+            if (globalComp.getEditors().get(index).getFile() != null) {
                 // File exists
-                try (FileWriter writer = new FileWriter(currentFile)) {
-                    globalComp.getTextArea().write(writer);
+                try (FileWriter writer = new FileWriter(globalComp.getEditors().get(index).getFile())) {
+                    globalComp.getEditors().get(index).getTextEditor().write(writer);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -105,9 +120,9 @@ class CreateFileMenu extends JMenu {
                     File file = chooser.getSelectedFile();
                     try (FileWriter writer = new FileWriter(file)) {
                         file.createNewFile();
-                        currentFile = file;
-                        globalComp.getTextArea().saveAsSetSyntax(writer, file.getName());
-                        globalComp.getWindow().setTitle(file.getName());
+                        globalComp.getEditors().get(index).setFile(file);
+                        globalComp.getEditors().get(index).getTextEditor().saveAsSetSyntax(writer, file.getName());
+                        globalComp.getWindow().getTabbedPane().setTitleAt(index, file.getName());
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
