@@ -1,12 +1,18 @@
 package com.hknight.text.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Insets;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import com.hknight.text.gui.menubar.CreateMenuBar;
+import com.hknight.text.gui.popup.IndentPopup;
 
 public class Window extends JFrame {
 
@@ -35,6 +41,22 @@ public class Window extends JFrame {
         JPanel footerPanel = new JPanel();
         footerPanel.setLayout(new BorderLayout());
 
+        IndentPopup indentPopup = new IndentPopup();
+
+        JButton button = new JButton("Indents");
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder());
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                indentPopup.show(e.getComponent(), e.getX(), e.getY());
+            }
+        });
+
+        footerPanel.add(button, BorderLayout.EAST);
         return footerPanel;
     }
 

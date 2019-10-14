@@ -23,6 +23,8 @@ public class EditorPanel extends JPanel {
     private TextEditor createEditor() {
         LanguageSupportFactory.get().register(textEditor);
         textEditor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
+        textEditor.setTabsEmulated(true);
+        textEditor.setTabSize(4);
         return textEditor;
     }
 

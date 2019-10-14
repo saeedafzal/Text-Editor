@@ -37,4 +37,8 @@ public class GlobalComp {
     public void putEditors(EditorPanel editorPanel) {
         editors.add(editorPanel);
     }
+
+    public TextEditor getCurrentEditor() {
+        return editors.get(window.getTabbedPane().getSelectedIndex()).getTextEditor();
+    }
 }
