@@ -26,6 +26,8 @@ class CreateFileMenu extends JMenu {
     private final JFileChooser chooser = new JFileChooser();
 
     CreateFileMenu() {
+        globalComp.setFileChooser(chooser);
+
         this.setText("File");
 
         this.add(createNewItem());

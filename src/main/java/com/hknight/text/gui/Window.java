@@ -22,7 +22,7 @@ public class Window extends JFrame {
     public Window() {
         globalComp.setWindow(this);
 
-        this.setTitle(null);
+        this.setTitle("Text Editor");
         this.setSize(1280, 720);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

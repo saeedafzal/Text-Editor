@@ -1,5 +1,6 @@
 package com.hknight.text;
 
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -20,6 +21,7 @@ public class Launch {
                 UIManager.setLookAndFeel(new FlatLightLaf());
                 final Window window = new Window();
                 window.setLocationRelativeTo(null);
+                window.setExtendedState(window.getExtendedState() | JFrame.MAXIMIZED_BOTH);
                 window.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();

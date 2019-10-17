@@ -1,9 +1,9 @@
 package com.hknight.text.gui;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+
+import javax.swing.JFileChooser;
 
 public class GlobalComp {
 
@@ -21,6 +21,7 @@ public class GlobalComp {
 
     private Window window;
     private List<EditorPanel> editors = new LinkedList<>();
+    private JFileChooser fileChooser;
 
     public Window getWindow() {
         return window;
@@ -30,15 +31,23 @@ public class GlobalComp {
         return editors;
     }
 
-    public void setWindow(Window window) {
+    void setWindow(Window window) {
         this.window = window;
     }
 
-    public void putEditors(EditorPanel editorPanel) {
+    void putEditors(EditorPanel editorPanel) {
         editors.add(editorPanel);
     }
 
     public TextEditor getCurrentEditor() {
         return editors.get(window.getTabbedPane().getSelectedIndex()).getTextEditor();
+    }
+
+    public JFileChooser getFileChooser() {
+        return fileChooser;
+    }
+
+    public void setFileChooser(JFileChooser fileChooser) {
+        this.fileChooser = fileChooser;
     }
 }
