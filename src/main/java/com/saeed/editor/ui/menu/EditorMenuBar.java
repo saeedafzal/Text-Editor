@@ -5,5 +5,6 @@ import javax.swing.JMenuBar;
 public class EditorMenuBar extends JMenuBar {
     public EditorMenuBar() {
         add(new FileMenu());
+        add(new HelpMenu());
     }
 }

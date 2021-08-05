@@ -9,11 +9,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
 import com.saeed.editor.event.Event;
 import com.saeed.editor.event.EventBus;
 import com.saeed.editor.model.FileData;
+import com.saeed.editor.ui.dialog.preferences.theme.Themes;
 import com.saeed.editor.ui.util.FileChooserUtil;
 import com.saeed.editor.ui.util.GlobalCompRef;
 
@@ -37,11 +39,13 @@ public class TabbedEditorPane {
         eventBus.subscribe(Event.SAVE_FILE, this::saveTextToFile);
         eventBus.subscribe(Event.UNSAVED_TITLE, this::tabNameUnsaved);
         eventBus.subscribe(Event.OPEN_FILE, this::openFile);
+        eventBus.subscribe(Event.THEME, this::updateTheme);
     }
 
     public void generateNewEditorTab(String title, RSyntaxTextArea textArea, FileData fileData) {
         defaultTextAreaSettings(textArea);
         textArea.getDocument().addDocumentListener(new DocumentListener() {
+
             @Override
             public void insertUpdate(DocumentEvent e) {
                 checkFileSaved();
@@ -95,16 +99,20 @@ public class TabbedEditorPane {
             }
         }
         fileDataList.remove(fileData);
-        if (tabbedPane.getTabCount() == 1) System.exit(0);
+        if (tabbedPane.getTabCount() == 1) {
+            System.exit(0);
+        }
         tabbedPane.removeTabAt(tabbedPane.getSelectedIndex());
     }
 
     private void tabNameUnsaved(boolean saved) {
         String title = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
-        if (!saved) title = "*" + title;
-        else {
-            if (title.substring(1).equals("*"))
+        if (!saved) {
+            title = "*" + title;
+        } else {
+            if (title.substring(1).equals("*")) {
                 title = title.substring(1);
+            }
         }
         tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), title);
     }
@@ -169,5 +177,22 @@ public class TabbedEditorPane {
     private void defaultTextAreaSettings(RSyntaxTextArea textArea) {
         textArea.setTabSize(4);
         textArea.setTabsEmulated(true);
+    }
+
+    private void updateTheme(Themes theme) {
+        if (theme == Themes.DARK) {
+            fileDataList.forEach(fileData -> changeStyleViaThemeXml(fileData.getTextArea(), "dark.xml"));
+        } else {
+            fileDataList.forEach(fileData -> changeStyleViaThemeXml(fileData.getTextArea(), "default.xml"));
+        }
+    }
+
+    private void changeStyleViaThemeXml(RSyntaxTextArea textArea, String themeFile) {
+        try(InputStream inputStream = getClass().getClassLoader().getResourceAsStream("themes/" + themeFile)) {
+            Theme theme = Theme.load(inputStream);
+            theme.apply(textArea);
+        } catch (IOException e) {
+            log.error("Failed to apply theme: {}", e.getMessage(), e);
+        }
     }
 }
