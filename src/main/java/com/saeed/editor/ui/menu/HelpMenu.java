@@ -1,6 +1,6 @@
 package com.saeed.editor.ui.menu;
 
-import javax.swing.JMenu;
+import javax.swing.*;
 
 public class HelpMenu extends JMenu {
 

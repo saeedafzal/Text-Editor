@@ -1,12 +1,12 @@
 package com.saeed.editor.ui.dialog.preferences;
 
-import javax.swing.JTree;
+import com.saeed.editor.event.Event;
+import com.saeed.editor.event.EventBus;
+
+import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-
-import com.saeed.editor.event.Event;
-import com.saeed.editor.event.EventBus;
 
 public class PreferencesTreeSelectionListener implements TreeSelectionListener {
 

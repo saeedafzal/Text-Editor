@@ -1,22 +1,19 @@
 package com.saeed.editor.ui.menu;
 
-import java.awt.Toolkit;
-import java.io.File;
-
-import javax.swing.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.saeed.editor.event.Event;
 import com.saeed.editor.event.EventBus;
 import com.saeed.editor.ui.util.FileChooserUtil;
+import lombok.extern.slf4j.Slf4j;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
 
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 
+@Slf4j
 public class FileMenu extends JMenu {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FileMenu.class);
     private static final int MASK = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
     private final EventBus eventBus;
 
@@ -47,7 +44,7 @@ public class FileMenu extends JMenu {
         openItem.addActionListener(e -> {
             File file = FileChooserUtil.display("Open File", JFileChooser.OPEN_DIALOG);
             if (file != null) {
-                LOG.info("Opened file: {}", file.getName());
+                log.info("Opened file: {}", file.getName());
                 eventBus.publish(Event.OPEN_FILE, file);
             }
         });
@@ -74,7 +71,7 @@ public class FileMenu extends JMenu {
         saveAsItem.addActionListener(e -> {
             File file = FileChooserUtil.display("Save File", JFileChooser.SAVE_DIALOG);
             if (file != null) {
-                LOG.info("Selected file: {}", file.getName());
+                log.info("Selected file: {}", file.getName());
                 eventBus.publish(Event.SAVE_FILE, file);
             }
         });

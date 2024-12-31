@@ -1,14 +1,12 @@
 package com.saeed.editor.model;
 
-import java.io.File;
-
-import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-
 import com.saeed.editor.event.Event;
 import com.saeed.editor.event.EventBus;
-
 import lombok.Getter;
 import lombok.Setter;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+
+import java.io.File;
 
 @Getter
 @Setter

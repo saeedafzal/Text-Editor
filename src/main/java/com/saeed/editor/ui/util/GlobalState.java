@@ -8,7 +8,7 @@ import com.saeed.editor.ui.dialog.preferences.PreferencesDialog;
 
 import static java.util.Arrays.asList;
 
-public class GlobalCompRef {
+public class GlobalState {
 
     public static Window window;
     public static PreferencesDialog preferencesDialog;

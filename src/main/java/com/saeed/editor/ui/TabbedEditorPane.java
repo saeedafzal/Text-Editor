@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import lombok.Getter;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
@@ -17,7 +18,7 @@ import com.saeed.editor.event.EventBus;
 import com.saeed.editor.model.FileData;
 import com.saeed.editor.ui.dialog.preferences.theme.Themes;
 import com.saeed.editor.ui.util.FileChooserUtil;
-import com.saeed.editor.ui.util.GlobalCompRef;
+import com.saeed.editor.ui.util.GlobalState;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,6 +28,7 @@ import static com.saeed.editor.model.SyntaxMap.SYNTAX_MAP;
 public class TabbedEditorPane {
 
     private static final String DEFAULT_TITLE = "Untitled";
+    @Getter
     private final JTabbedPane tabbedPane;
     private final List<FileData> fileDataList = new ArrayList<>();
 
@@ -34,8 +36,8 @@ public class TabbedEditorPane {
         this.tabbedPane = new JTabbedPane();
 
         EventBus eventBus = EventBus.getDefault();
-        eventBus.subscribe(Event.GENERATE_NEW_TAB, (Object a) -> generateNewEditorTab());
-        eventBus.subscribe(Event.CLOSE_CURRENT_TAB, (Object a) -> closeCurrentTab());
+        eventBus.subscribe(Event.GENERATE_NEW_TAB, (Object _) -> generateNewEditorTab());
+        eventBus.subscribe(Event.CLOSE_CURRENT_TAB, (Object _) -> closeCurrentTab());
         eventBus.subscribe(Event.SAVE_FILE, this::saveTextToFile);
         eventBus.subscribe(Event.UNSAVED_TITLE, this::tabNameUnsaved);
         eventBus.subscribe(Event.OPEN_FILE, this::openFile);
@@ -84,14 +86,10 @@ public class TabbedEditorPane {
         generateNewEditorTab(DEFAULT_TITLE, new RSyntaxTextArea(), null);
     }
 
-    public JTabbedPane getTabbedPane() {
-        return tabbedPane;
-    }
-
     private void closeCurrentTab() {
         FileData fileData = fileData();
         if (!fileData.isSaved()) {
-            int choice = JOptionPane.showConfirmDialog(GlobalCompRef.window, "Save before exiting?");
+            int choice = JOptionPane.showConfirmDialog(GlobalState.window, "Save before exiting?");
             if (choice == JOptionPane.OK_OPTION) {
                 saveFile(fileData, fileData.getFile());
             } else if (choice == JOptionPane.CANCEL_OPTION) {

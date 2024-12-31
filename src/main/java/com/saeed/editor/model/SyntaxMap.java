@@ -1,8 +1,8 @@
 package com.saeed.editor.model;
 
-import java.util.Map;
-
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+
+import java.util.Map;
 
 public class SyntaxMap {
     public static final Map<String, String> SYNTAX_MAP = Map.of(

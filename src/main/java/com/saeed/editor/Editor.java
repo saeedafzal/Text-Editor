@@ -8,14 +8,7 @@ import com.saeed.editor.ui.Window;
 public class Editor {
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            try {
-                UIManager.setLookAndFeel(new FlatLightLaf());
-                Window window = new Window();
-                window.setVisible(true);
-            } catch (UnsupportedLookAndFeelException e) {
-                e.printStackTrace();
-            }
-        });
+        FlatLightLaf.setup();
+        SwingUtilities.invokeLater(Window::new);
     }
 }

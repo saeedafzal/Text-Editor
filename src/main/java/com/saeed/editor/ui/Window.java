@@ -7,14 +7,16 @@ import javax.swing.*;
 
 import com.saeed.editor.ui.dialog.preferences.PreferencesDialog;
 import com.saeed.editor.ui.menu.EditorMenuBar;
-import com.saeed.editor.ui.util.GlobalCompRef;
+import com.saeed.editor.ui.util.GlobalState;
+
+import static com.formdev.flatlaf.util.SystemInfo.isMacFullWindowContentSupported;
 
 public class Window extends JFrame {
 
     private final PreferencesDialog preferencesDialog;
 
     public Window() {
-        GlobalCompRef.window = this;
+        GlobalState.window = this;
         preferencesDialog = new PreferencesDialog(this);
 
         setFrameProperties();
@@ -28,6 +30,8 @@ public class Window extends JFrame {
         setContentPane(contentPane);
 
         tabbedEditorPane.generateNewEditorTab();
+
+        setVisible(true);
     }
 
     private void setFrameProperties() {
@@ -38,9 +42,15 @@ public class Window extends JFrame {
     }
 
     private void setDesktop() {
+        EditorMenuBar editorMenuBar = new EditorMenuBar();
+
         Desktop desktop = Desktop.getDesktop();
-        desktop.setDefaultMenuBar(new EditorMenuBar());
-        desktop.setAboutHandler(e -> JOptionPane.showMessageDialog(this, "Editor - vX.X"));
-        desktop.setPreferencesHandler(e -> preferencesDialog.setVisible(true));
+        if (isMacFullWindowContentSupported) {
+            desktop.setDefaultMenuBar(editorMenuBar);
+            desktop.setAboutHandler(_ -> JOptionPane.showMessageDialog(this, "Editor - vX.X"));
+            desktop.setPreferencesHandler(_ -> preferencesDialog.setVisible(true));
+        } else {
+            setJMenuBar(editorMenuBar);
+        }
     }
 }

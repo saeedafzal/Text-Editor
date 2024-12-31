@@ -1,17 +1,17 @@
 package com.saeed.editor.ui.dialog.preferences;
 
-import java.awt.*;
-
-import javax.swing.*;
-import javax.swing.tree.*;
-
 import com.saeed.editor.event.Event;
 import com.saeed.editor.event.EventBus;
 import com.saeed.editor.ui.Window;
 import com.saeed.editor.ui.dialog.preferences.theme.Themes;
-import com.saeed.editor.ui.util.GlobalCompRef;
-
+import com.saeed.editor.ui.util.GlobalState;
 import net.miginfocom.swing.MigLayout;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeSelectionModel;
+import java.awt.*;
 
 public class PreferencesDialog extends JDialog {
 
@@ -21,7 +21,7 @@ public class PreferencesDialog extends JDialog {
     public PreferencesDialog(Window window) {
         super(window, "Preferences");
 
-        GlobalCompRef.preferencesDialog = this;
+        GlobalState.preferencesDialog = this;
 
         setSize(700, 800);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
